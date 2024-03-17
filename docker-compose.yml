@@ -1,0 +1,51 @@
+version: '3'
+services:
+  final-case-restaurant:
+    build:
+      context: ./final-case-restaurant
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - solr
+      - postgres
+    ports:
+      - "8089:8089"
+
+  final-case-task:
+    build:
+      context: ./final-case-task
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - solr
+      - postgres
+    ports:
+      - "8080:8080"
+
+  solr:
+    image: solr:latest
+    command:
+      - solr-precreate
+      - mycore2
+    networks:
+      - backend
+    ports:
+      - "8983:8983"
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: n11FinalCase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 23736musti
+    networks:
+        - backend
+    ports:
+      - "5432:5432"
+
+
+networks:
+  backend:
+    driver: bridge
